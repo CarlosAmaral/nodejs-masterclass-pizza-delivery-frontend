@@ -15,7 +15,32 @@ let handlers = {};
  */
 
 handlers.index = (data, cb) => {
-  cb(200, undefined, 'html')
+
+  if (data.method == 'get') {
+
+    const templateData = {
+      "head.title": "Pizza Delivery App",
+      "head.description": "We deliver pizza",
+      "body.title": "Welcome!",
+      "body.class": "index"
+    }
+
+    helpers.getTemplate('index', templateData, (err, str) => {
+      if (!err && str) {
+        helpers.addUniversalTemplates(str, templateData, (err, data) => {
+          if (!err && data) {
+            cb(200, data, 'html')
+          } else {
+            cb(400, undefined, 'html')
+          }
+        })
+      } else {
+        cb(500, undefined, 'html');
+      }
+    })
+  } else {
+    cb(405, undefined, 'html')
+  }
 };
 
 // Ping Handler

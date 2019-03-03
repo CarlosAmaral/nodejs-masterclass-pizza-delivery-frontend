@@ -1,12 +1,12 @@
-/**
- *
- * HELPERS
- *
- * */
+/*
+* HELPERS
+*/
 
 const config = require("./config");
 const https = require("https");
 const querystring = require('querystring');
+const fs = require('fs');
+const path = require('path');
 
 const helpers = {};
 
@@ -48,7 +48,7 @@ helpers.createRandomString = strLength => {
 };
 
 helpers.submitPayment = () => {
-    
+
     return new Promise(function (resolve, reject) {
         const options = {
             hostname: config.stripe.hostname,
@@ -75,7 +75,7 @@ helpers.submitPayment = () => {
     });
 };
 
-helpers.sendEmail = ({name, email, cart}) => {
+helpers.sendEmail = ({ name, email, cart }) => {
 
     return new Promise(function (resolve, reject) {
         const data = querystring.stringify({
@@ -110,5 +110,65 @@ helpers.sendEmail = ({name, email, cart}) => {
         response.end();
     });
 };
+
+helpers.getTemplate = (templateName, data, cb) => {
+    templateName = typeof (templateName) == 'string' && templateName.length > 0 ? templateName : false;
+    data = typeof(data) == 'object' && data !== null ? data : {}
+
+    if (templateName) {
+        const templatesDir = path.join(__dirname, '/../templates/');
+        fs.readFile(templatesDir + templateName + '.html', 'utf8', (err, str) => {
+            if (!err && str && str.length > 0) {
+                const interpolatedString = helpers.interpolate(str, data);
+                cb(false, interpolatedString)
+            } else {
+                cb('No template found')
+            }
+        })
+    } else {
+        cb('Invalid template name')
+    }
+}
+
+helpers.addUniversalTemplates = (str, data, cb) => {
+    str = typeof(str) == 'string' && str.length > 0 ? str : ''
+    data = typeof(data) == 'object' && data !== null ? data : {}
+    
+    helpers.getTemplate('header', data, (err, headerStr) => {
+        if(!err && headerStr){
+            helpers.getTemplate('footer', data, (err, footerStr) => {
+                if(!err && footerStr){
+                    const fullStr = headerStr + footerStr;
+                    cb(false, fullStr);
+                } else {
+                    cb('Not Found');
+                }
+            })
+        } else {
+            cb ("Not Found")
+        }
+    })
+}
+
+helpers.interpolate = (str, data) => {
+    str = typeof(str) == 'string' && str.length > 0 ? str : ''
+    data = typeof(data) == 'object' && data !== null ? data : {}
+
+    for (const key in config.templateGlobals){
+        if(config.templateGlobals.hasOwnProperty(key)){
+            data['global.'+ key] = config.templateGlobals[key];
+        }
+    }
+
+    for (const key in data) {
+        if(data.hasOwnProperty(key) && typeof(data[key]) == 'string') {
+            const replace = data[key];   
+            const find = '{' + key + '}';
+            str = str.replace(find, replace);
+        }   
+    }
+
+    return str;
+}
 
 module.exports = helpers;

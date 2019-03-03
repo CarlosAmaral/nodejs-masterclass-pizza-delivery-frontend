@@ -21,6 +21,12 @@ environments.staging = {
         "path": "/v3",
         "domain": "sandboxd6655f04aa2c45988630115ad8882a0e.mailgun.org/messages",
         "key": "pubkey-3c5f349229c083658e5fd47c1b809304"
+    },
+    "templateGlobals": {
+        "appName": "PizzaDeliveryApp",
+        "companyName": "Company, Inc",
+        "yearCreated": "2019",
+        "baseUrl": "http:localhost:3000/"
     }
 }
 
@@ -39,6 +45,12 @@ environments.production = {
         "path": "/v3",
         "domain": "sandboxd6655f04aa2c45988630115ad8882a0e.mailgun.org/messages",
         "key": "pubkey-3c5f349229c083658e5fd47c1b809304"
+    },
+    "templateGlobals": {
+        "appName": "PizzaDeliveryApp",
+        "companyName": "Company, Inc",
+        "yearCreated": "2019",
+        "baseUrl": "http:localhost:5000/"
     }
 }
 
