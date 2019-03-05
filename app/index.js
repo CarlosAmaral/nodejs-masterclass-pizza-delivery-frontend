@@ -73,8 +73,10 @@ const unifiedServer = (req, res) => {
     req.on('end', () => {
         buffer += decoder.end();
 
-        const chosenHandler = typeof (router[trimmedPath]) !== 'undefined' ? router[trimmedPath] : handlers.notFound;
+        let chosenHandler = typeof (router[trimmedPath]) !== 'undefined' ? router[trimmedPath] : handlers.notFound;
 
+        chosenHandler = trimmedPath.indexOf('public/') > -1 ? handlers.public : chosenHandler;
+        
         const data = {
             "trimmedPath": trimmedPath,
             "queryString": queryString,
@@ -102,6 +104,31 @@ const unifiedServer = (req, res) => {
                 payloadString = typeof (payload == 'string') ? payload : "";
             }
 
+            if(contentType == 'favicon') {
+                res.setHeader('Content-Type', 'image/x-icon');
+                payloadString = typeof (payload == 'string') ? payload : "";
+            }
+
+            if(contentType == 'css') {
+                res.setHeader('Content-Type', 'text/css');
+                payloadString = typeof (payload == 'string') ? payload : "";
+            }
+
+            if(contentType == 'png') {
+                res.setHeader('Content-Type', 'image/png');
+                payloadString = typeof (payload == 'string') ? payload : "";
+            }
+
+            if(contentType == 'jpg') {
+                res.setHeader('Content-Type', 'image/jpg');
+                payloadString = typeof (payload == 'string') ? payload : "";
+            }
+
+            if(contentType == 'plain') {
+                res.setHeader('Content-Type', 'text/plain');
+                payloadString = typeof (payload == 'string') ? payload : "";
+            }
+
             res.writeHead(statusCode)
             res.end(payloadString);
         })
@@ -115,6 +142,8 @@ const router = {
     "account/delete": handlers.deleteAccount,
     "session/create": handlers.createSession,
     "session/delete": handlers.deleteSession,
+    "public": handlers.public,
+    "favicon.ico": handlers.favicon,
     "api/users": handlers.users,
     "api/tokens": handlers.tokens,
     "api/cart": handlers.cart

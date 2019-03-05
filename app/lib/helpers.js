@@ -138,7 +138,7 @@ helpers.addUniversalTemplates = (str, data, cb) => {
         if(!err && headerStr){
             helpers.getTemplate('footer', data, (err, footerStr) => {
                 if(!err && footerStr){
-                    const fullStr = headerStr + footerStr;
+                    const fullStr = headerStr + str + footerStr;
                     cb(false, fullStr);
                 } else {
                     cb('Not Found');
@@ -169,6 +169,25 @@ helpers.interpolate = (str, data) => {
     }
 
     return str;
+}
+
+// Get static files from public
+
+helpers.getStaticAsset = (fileName, cb) => {
+    fileName = typeof(fileName) == 'string' && fileName.length > 0 ? fileName : false;
+
+    if(fileName){
+        const publicDir = path.join(__dirname, '/../public/');
+        fs.readFile(publicDir + fileName, (err, data) => {
+            if(!err && data){
+                cb(false, data);
+            } else {
+                cb('Not file found');
+            }
+        })
+    } else{
+        cb('Not a valid file name')
+    }
 }
 
 module.exports = helpers;

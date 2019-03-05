@@ -6,7 +6,7 @@
 const _data = require("./data");
 const helpers = require("./helpers");
 const mockCart = require("../mock/cart.json");
-
+const url = require("url");
 // Define handlers
 let handlers = {};
 
@@ -43,6 +43,55 @@ handlers.index = (data, cb) => {
   }
 };
 
+handlers.favicon = (data, cb) => {
+  if (data.method == 'get') {
+
+     helpers.getStaticAsset('favicon.ico', (err, data) => {
+      if(!err && data){
+        cb(200, data, 'favicon')
+      } else {
+        cb(500)
+      }
+     })
+  } else {
+    cb(405)
+  }
+
+}
+
+handlers.public = (data, cb) => {
+  const urlAux = url;
+  if (data.method == 'get') {
+    const trimmedAssetName = new URL(data.trimmedPath);
+    //const trimmedAssetName = data.trimmedPath.replace('public/', '').trim();
+    if (trimmedAssetName.length > 0) {
+      helpers.getStaticAsset(trimmedAssetName, (err, data) => {
+        if (!err && data) {
+          let contentType = 'plain';
+          if (trimmedAssetName.indexOf('.css') > -1) {
+            contentType = "css";
+          }
+          if (trimmedAssetName.indexOf('.png') > -1) {
+            contentType = "png";
+          }
+          if (trimmedAssetName.indexOf('.jpg') > -1) {
+            contentType = "jpg";
+          }
+          if (trimmedAssetName.indexOf('.ico') > -1) {
+            contentType = "favicon";
+          }
+          cb(200, data, contentType);
+        } else {
+          cb(404)
+        }
+      });
+    } else {
+      cb(404)
+    }
+  } else {
+    cb(405)
+  }
+}
 // Ping Handler
 handlers.users = (data, cb) => {
   const acceptableMethods = ["get", "post", "put", "delete"];

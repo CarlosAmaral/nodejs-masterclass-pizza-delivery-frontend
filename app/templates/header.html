@@ -1,27 +1,23 @@
 <html>
 
-<head>
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="content-language" content="en-us" />
+        <base href="{global.baseUrl}" />
 
+        <!--meta tags-->
 
-    <meta charset="utf-8" />
-    <meta http-equiv="content-language" content="en-us" />
-    <base href="{global.baseUrl}" />
+        <title>{head.title} | {global.appName}</title>
+        <meta name="description" content="{head.description}" />
 
-    <!--meta tags-->
+        <link type="image/x-icon" rel="icon" href="favicon.ico">
+        <script type="text/javascript" charset="utf-8" src="public/app.js"></script>
+        <link rel="stylesheet" type="text/css" href="public/app.css" />
+    </head>
 
-    <title>{head.title} | {global.appName}</title>
-    <meta name="description" content="{head.description}" />
+    <body class="{body.class}">
 
-    <link type="image/x-icon" rel="icon" href="favicon.ico">
-    <script type="text/javascript" charset="utf-8" src="public/app.js"></script>
-    <link rel="stylesheet" type="text/css" href="public/app.css" />
-
-
-</head>
-
-<body class="{body.class}">
-
-    <div class="wrapper">
+        <div class="wrapper">
 
         <div class="header">
             <a class="logo" href="/"></a>
@@ -30,19 +26,19 @@
                     <a href="/">Home</a>
                 </li>
                 <li>
-                    <a class="loggedOut" href="">Signup</a>
+                    <a href="/account/create" class="loggedOut" href="">Signup</a>
                 </li>
                 <li>
-                    <a class="loggedOut" href="">Login</a>
+                    <a href="/session/create" class="loggedOut" href="">Login</a>
                 </li>
                 <li>
-                    <a class="loggedIn" href="">Dashboard</a>
+                    <a href="/checks/all" class="loggedIn" href="">Dashboard</a>
                 </li>
                 <li>
-                    <a class="loggedIn" href="">Account Settings</a>
+                    <a href="/account/edit" class="loggedIn" href="">Account Settings</a>
                 </li>
                 <li>
-                    <a class="loggedIn" href="">Logout</a>
+                    <a  href="#" class="loggedIn" href="">Logout</a>
                 </li>
             </ul>
         </div>
